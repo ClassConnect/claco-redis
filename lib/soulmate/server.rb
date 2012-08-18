@@ -9,11 +9,14 @@ module Soulmate
 
     use Rack::JSONP
 
-    before do
-      content_type 'application/json', :charset => 'utf-8'
-      headers['Access-Control-Allow-Origin'] = '*'
-      headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
-      headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-Prototype-Version, X-CSRF-Token'
+    def handle_jsonp(data)
+      if params[:callback]
+        content_type 'text/javascript', :charset => 'utf-8'
+        "#{params[:callback]}(#{data})"
+      else
+        content_type 'application/json', :charset => 'utf-8'
+        data
+      end
     end
 
     get '/' do
@@ -43,13 +46,13 @@ module Soulmate
 
       #return retstr
 
-      return MultiJson.encode(smushset.uniq)
+      return handle_jsonp(ultiJson.encode(smushset.uniq))
 
     end
 
     not_found do
       content_type 'application/json', :charset => 'utf-8'
-      MultiJson.encode({ :error => "not found" })
+      handle_jsonp MultiJson.encode({ :error => "not found" })
     end
 
   end
