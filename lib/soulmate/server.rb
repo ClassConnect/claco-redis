@@ -11,7 +11,9 @@ module Soulmate
 
     before do
       content_type 'application/json', :charset => 'utf-8'
-response.headers["Access-Control-Allow-Origin"] = "*"
+      headers['Access-Control-Allow-Origin'] = '*'
+      headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+      headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-Prototype-Version, X-CSRF-Token'
     end
 
     get '/' do
